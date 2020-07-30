@@ -72,6 +72,10 @@
         background: #ff0000;
       }
 
+      .rojo.light{
+        background: #db6666;
+      }
+
       .btn-start {
         width: 400px;
         height: 100px;
@@ -107,6 +111,7 @@
         constructor(){
           this.inicializar();
           this.generarSecuencia(); 
+          this.siguienteNivel();
         }
 
         inicializar(){
@@ -134,6 +139,40 @@
           });*/
 
 
+        }
+
+        siguienteNivel(){
+          this.iluminarSecuencia();
+        }
+
+        transformarNumeroAColor(numero){
+          switch(numero){
+            case 0: 
+              return 'celeste';
+            case 1: 
+              return 'violeta';
+            case 2: 
+              return 'naranja';
+            case 3: 
+              return 'rojo';
+          }
+        }
+
+        iluminarSecuencia(){
+          var color;
+          for(var i = 0; i < this.nivel; i++){
+            color = this.transformarNumeroAColor(this.secuencia[i]);
+            this.iluminarColor(color);
+          }
+        }
+
+        iluminarColor(color){
+          this.colores[color].classList.add('light');
+          setTimeout(() => this.apagarColor(color), 350);
+        }
+
+        apagarColor(color){
+          
         }
 
       }
