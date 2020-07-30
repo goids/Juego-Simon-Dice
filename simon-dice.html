@@ -106,16 +106,42 @@
       class Juego{
         constructor(){
           this.inicializar();
+          this.generarSecuencia(); 
         }
 
         inicializar(){
-          btnEmpezar.classList.add('hide');
+          btnEmpezar.classList.add('hide'); //element.classList.add() -> para agregar una clase a un elemento
+          this.nivel = 1;
+          this.colores = { //Javascript si en un objeto y el nombre del atributo y el valor son iguales, se puede escribir de este modo
+            celeste, //es lo mismo que celeste: celeste, 
+            violeta, // es lo mismo que violeta:violeta
+            naranja, // es lo mismo que naranja:naranja
+            rojo // es lo mismo que rojo:rojo
+          }
+        }
+
+        generarSecuencia(){
+          //Crear un atributo de una clase, en este caso el atributo secuencia para la clase Juego
+          //Generar un array de números ramdons 
+          this.secuencia = new Array(10).fill(0).map( n => Math.floor(Math.random() * 4) );
+          
+          /*
+          Esto es lo mismo que la funcion de arriba
+          this.seceunciaCompleta = new Array(10);
+          this.seceunciaCompleta.fill(0);
+          this.seceunciaCompleta = this.seceunciaCompleta.map(function(n){
+            return Math.floor(Math.random() * 4);
+          });*/
+
+
         }
 
       }
 
       function empezarJuego(){
-        var juego = new Juego();
+        //var juego = new Juego();
+        //A modo de prueba se pondra el objeto en window
+        window.juego = new Juego();
       }
     </script>
   
