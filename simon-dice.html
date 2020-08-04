@@ -115,6 +115,7 @@
       class Juego{
         constructor(){
           //this.inicializar = this.inicializar.bind(this);
+          this.puntos = 0;
           this.inicializar();
           this.generarSecuencia(); 
           /*setTimeout( function(){
@@ -239,6 +240,7 @@
           if(numeroColor === this.secuencia[this.subnivel]){
             this.subnivel++;
             if(this.subnivel === this.nivel){
+              this.puntos++;
               this.nivel++;
               this.eliminarEventosClick();
               if(this.nivel === (ULTIMO_NIVEL + 1)){
