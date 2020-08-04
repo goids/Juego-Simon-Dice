@@ -106,6 +106,7 @@
       const naranja = document.getElementById('naranja');
       const rojo = document.getElementById('rojo');
       const btnEmpezar = document.getElementById('btnEmpezar');
+      const ULTIMO_NIVEL = 10;
 
       class Juego{
         constructor(){
@@ -115,10 +116,12 @@
         }
 
         inicializar(){
+          this.siguienteNivel = this.siguienteNivel.bind(this); //Con el bind() desde el inicializar trabjaa correctamente el juego, cuando se ejecuta el bind en la linea del codigo, no funciona correctamente
+          this.elegirColor = this.elegirColor.bind(this); //Esta es otra manera para evitar escribri en el evento el this.elegirColor.bind(this), para atar esa funcion a nuestra clase Juego, justamente el va a tomar el this del juego ya que lo estamos inicializando en esta funcion
           btnEmpezar.classList.add('hide'); //element.classList.add() -> para agregar una clase a un elemento
           this.nivel = 1;
           this.colores = { //Javascript si en un objeto y el nombre del atributo y el valor son iguales, se puede escribir de este modo
-            celeste, //es lo mismo que celeste: celeste, 
+            celeste, //es lo mismo que celeste:celeste, 
             violeta, // es lo mismo que violeta:violeta
             naranja, // es lo mismo que naranja:naranja
             rojo // es lo mismo que rojo:rojo
@@ -128,7 +131,7 @@
         generarSecuencia(){
           //Crear un atributo de una clase, en este caso el atributo secuencia para la clase Juego
           //Generar un array de números ramdons 
-          this.secuencia = new Array(10).fill(0).map( n => Math.floor(Math.random() * 4) );
+          this.secuencia = new Array(ULTIMO_NIVEL).fill(0).map( n => Math.floor(Math.random() * 4) );
           
           /*
           Esto es lo mismo que la funcion de arriba
@@ -142,7 +145,9 @@
         }
 
         siguienteNivel(){
+          this.subnivel = 0;
           this.iluminarSecuencia();
+          this.agregarEventosClick();
         }
 
         transformarNumeroAColor(numero){
@@ -158,11 +163,25 @@
           }
         }
 
+        transformarColorANumero(color){
+          switch(color){
+            case 'celeste':
+              return 0;
+            case 'violeta':
+              return 1;
+            case 'naranja':
+              return 2;
+            case 'rojo':
+              return 3;
+          }
+        }
+
         iluminarSecuencia(){
-          var color;
-          for(var i = 0; i < this.nivel; i++){
-            color = this.transformarNumeroAColor(this.secuencia[i]);
-            this.iluminarColor(color);
+          for(let i = 0; i < this.nivel; i++){
+            const color = this.transformarNumeroAColor(this.secuencia[i]);
+            setTimeout( () => {
+              this.iluminarColor(color)
+            }, 1000 * i);
           }
         }
 
@@ -172,7 +191,53 @@
         }
 
         apagarColor(color){
-          
+          this.colores[color].classList.remove('light');
+        }
+
+        agregarEventosClick(){ //this.colores.celeste.addEventListener('click', this.elegirColor.bind(this)); con el bind() desde aquí falla el codigo
+            this.colores.celeste.addEventListener('click', this.elegirColor); //con bind, enlazamos el this, ya que el this en un evento escucha al elemento
+            this.colores.violeta.addEventListener('click', this.elegirColor); //Pero si le enlazamos el this, mediante el metodo bind, el this covertira a this del objeto más cercano
+            this.colores.naranja.addEventListener('click', this.elegirColor); //en este caso el objeto más cercano y que queremos que sea this es Juego
+            this.colores.rojo.addEventListener('click', this.elegirColor);
+            //Otra forma de hacerlo con un for-in que sirve para recorrer objetos
+            /*for(const color in this.colores){
+              this.colores[color].addEventListener('click', this.elegirColor);
+            }*/
+        }
+
+        eliminarEventosClick(){
+          this.colores.celeste.removeEventListener('click', this.elegirColor);
+          this.colores.violeta.removeEventListener('click', this.elegirColor);
+          this.colores.naranja.removeEventListener('click', this.elegirColor);
+          this.colores.rojo.removeEventListener('click', this.elegirColor);
+        }
+
+        elegirColor(evt){
+          const nombreColor = evt.target.dataset.color;
+          const numeroColor = this.transformarColorANumero(nombreColor);
+          this.iluminarColor(nombreColor);
+          if(numeroColor === this.secuencia[this.subnivel]){
+            this.subnivel++;
+            if(this.subnivel === this.nivel){
+              this.nivel++;
+              this.eliminarEventosClick();
+              if(this.nivel === (ULTIMO_NIVEL + 1)){
+                //Ganó
+              }else{
+                setTimeout(this.siguienteNivel, 1500);
+                //Lo que tengo arriba es Esto es equivalente a esto
+                /*setTimeout( function(){
+                  this.siguienteNivel();
+                }, 1500);
+                setTimeout( ()=> {
+                  this.siguienteNivel();
+                }, 1500)*/
+                
+              }
+            }
+          }else{
+            //Perdió
+          }
         }
 
       }
